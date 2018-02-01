@@ -1,47 +1,47 @@
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyAIj_wgXdh22eO10chqNfta3fmPSBPfqYc",
-  authDomain: "message-lab.firebaseapp.com",
-  databaseURL: "https://message-lab.firebaseio.com",
-  projectId: "message-lab",
-  storageBucket: "message-lab.appspot.com",
-  messagingSenderId: "311965746411"
-};
-firebase.initializeApp(config);
-
-
-  // project code
+// project code
 
 window.addEventListener('load', everything);
 
-function everything(event){
+function everything(event) {
 
-  let db = firebase.database();
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAIj_wgXdh22eO10chqNfta3fmPSBPfqYc",
+    authDomain: "message-lab.firebaseapp.com",
+    databaseURL: "https://message-lab.firebaseio.com",
+    projectId: "message-lab",
+    storageBucket: "message-lab.appspot.com",
+    messagingSenderId: "311965746411"
+  };
+  firebase.initializeApp(config);
+
+  // link to database
+  const db = firebase.database();
 
   // all html elements
   const htmlElement = {
     sendBtn: document.getElementById('sendBtn'),
     textInput: document.getElementById("textInput"),
-    showTime: document.getElementById("showTime"),
+    date: document.getElementById("date"),
     chatContainer: document.getElementById("container")
 
   }
 
-  htmlElement.sendBtn.style.disabled = true;
+  // THE LOGIN page code
 
-  // Message
-  let message = {
-  	sender: 'David',
-    text: '',
-    likes: 3,
-    dislikes: 2,
-    time: ''
-  };
+  // code to se user and and check authorisation
 
+  // THE CEATE account page code
+
+  // code to create and puch a new user to the database and check if the username exist allready
+
+
+
+  // THE CHAT ROOM code
 
   // Time Element
-
-  function getTime(){
+  function getTime() {
     let time = new Date();
     let hours = time.getHours();
     let minutes = time.getMinutes();
@@ -52,51 +52,77 @@ function everything(event){
 
     function checkTime(i) {
       if (i < 10) {
-          i = '0' + i;
-          }
-          return i;
+        i = '0' + i;
       }
-
+      return i;
+    }
     return finalTime;
   }
 
+  // Date of day, month and year
+  function getDate(){
+    let date = new Date();
+    let day = date.getDate();
+    let weekDay = date.getDay();
+    let month = date.getMonth();
+    let year = date.getFullYear();
 
-  console.log(getTime());
-  console.log(htmlElement.sendBtn);
+    let d = ['Måndag', 'Tisdag','Onsdag','Torsdag','Fredag', 'Lördag','Söndag']
+    let m = ['Januari', 'February', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December']
+
+    return d[weekDay] + ' ' + day + ' ' + m[month] + ' ' + year;
+  }
+
+  htmlElement.date.innerHTML = getDate();
+
+  // Message object
+  let message = {
+    sender: 'Jon doe', // users.name
+    text: '',
+    likes: 0,
+    dislikes: 0,
+    time: ''
+  };
 
 
-  htmlElement.textInput.addEventListener("change" , function(event){
-    htmlElement.sendBtn.disabled = false;
+  // Text input
+  htmlElement.textInput.addEventListener("change", function(event) {
+
     message.text = htmlElement.textInput.value;
     message.time = getTime();
-  })
-  htmlElement.sendBtn.addEventListener("click" , function(event){
+  });
 
-    if(message.text !== ""){
+
+  // Send input
+  htmlElement.sendBtn.addEventListener("click", function(event) {
+
     db.ref('/messages').push(message);
-    /**/
 
-    db.ref("/messages").on("value", function (snapshot) {
-        let userData = snapshot.val();
-        let output = '';
+  });
+
+  // Input uploded to message container
+  db.ref("/messages").on("value", function(snapshot) {
+    let userData = snapshot.val();
+    htmlElement.chatContainer.innerHTML = '';
+    let output = '';
+    let str;
+
+    for (let info in userData) {
+      console.log(`allData har en property som heter ${info}`);
+      console.log('värdet är:', userData[info]);
+      str = userData[info];
 
 
-        for (let info in userData) {
-          console.log(`allData har en property som heter ${info}`);
-          console.log('värdet är:' , userData[info]);
-          str = userData[info];
+      console.log('userdata ', str.text);
+      output += `<div class = 'message-light'>
+                        <p>${str.text} <span>${str.time}</span></p>
+                      </div>`
 
-
-            console.log('userdata ', str.text);
-           output += `<div class = 'message-light'>
-                          <p>${str.text} <span>${str.time}</span></p>
-                        </div>`
-
-            }
-            htmlElement.chatContainer.innerHTML = output;
-      });
     }
-  })
+    htmlElement.chatContainer.innerHTML = output;
+  });
 
 
-}
+
+
+} // THE END of function everything
