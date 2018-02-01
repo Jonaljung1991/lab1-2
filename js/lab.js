@@ -17,8 +17,8 @@ let message = {  // exempel objekt
   likes: 3,
   dislikes: 2,
   time: '12.30'
-
 };
+
 
 
 
