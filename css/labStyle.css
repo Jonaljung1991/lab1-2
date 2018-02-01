@@ -38,3 +38,26 @@ a{
 .midSection {
   margin: 3rem 0;
 }
+
+
+/* Bara på chatsidan */
+header{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+}
+#logOut{
+  position: absolute;
+  right: 20%;
+}
+
+#chatMain{
+  height: 70vh;
+}
+footer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+}
