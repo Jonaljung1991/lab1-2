@@ -20,21 +20,3 @@ main{
 main>form>*{
   display: block;
 }
-
-a{
-  margin-top: 1rem;
-  text-decoration: none;
-  color: #000;
-  text-align: center;
-  display: block;
-}
-
-.midLine{
-  margin: 0 15px;
-  display: inline-block;
-  width: 120px;
-  border-top: 1.5px solid grey;
-}
-.midSection {
-  margin: 3rem 0;
-}
