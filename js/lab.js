@@ -66,14 +66,15 @@ function everything(event) {
     let weekDay = date.getDay();
     let month = date.getMonth();
     let year = date.getFullYear();
-
-    let d = ['Måndag', 'Tisdag','Onsdag','Torsdag','Fredag', 'Lördag','Söndag']
+    
+    let d = ['Söndag','Måndag', 'Tisdag','Onsdag','Torsdag','Fredag', 'Lördag']
     let m = ['Januari', 'February', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December']
 
     return d[weekDay] + ' ' + day + ' ' + m[month] + ' ' + year;
   }
 
   htmlElement.date.innerHTML = getDate();
+
 
   // Message object
   let message = {
@@ -108,12 +109,12 @@ function everything(event) {
     let str;
 
     for (let info in userData) {
-      console.log(`allData har en property som heter ${info}`);
-      console.log('värdet är:', userData[info]);
+      //console.log(`allData har en property som heter ${info}`);
+      //console.log('värdet är:', userData[info]);
       str = userData[info];
 
 
-      console.log('userdata ', str.text);
+    //  console.log('userdata ', str.text);
       output += `<div class = 'message-light'>
                         <p>${str.text} <span>${str.time}</span></p>
                       </div>`
