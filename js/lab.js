@@ -48,7 +48,7 @@ function everything(event) {
     let h = checkTime(hours);
     let m = checkTime(minutes);
     let finalTime = `${h} : ${m}`;
-    console.log(typeof hours);
+
 
     function checkTime(i) {
       if (i < 10) {
@@ -60,14 +60,14 @@ function everything(event) {
   }
 
   // Date of day, month and year
-  function getDate(){
+  function getDate() {
     let date = new Date();
     let day = date.getDate();
     let weekDay = date.getDay();
     let month = date.getMonth();
     let year = date.getFullYear();
 
-    let d = ['Söndag','Måndag', 'Tisdag','Onsdag','Torsdag','Fredag', 'Lördag']
+    let d = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
     let m = ['Januari', 'February', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December']
 
     return d[weekDay] + ' ' + day + ' ' + m[month] + ' ' + year;
@@ -78,13 +78,14 @@ function everything(event) {
 
   // Message object
   let message = {
-    messageNr: 0,
+    //  messageKey: '',
     sender: 'Jon doe', // users.name
     text: '',
     likes: 0,
     dislikes: 0,
     time: ''
   };
+
 
 
   // Text input
@@ -98,7 +99,8 @@ function everything(event) {
   // Send input
   htmlElement.sendBtn.addEventListener("click", function(event) {
 
-    db.ref('/messages').push(message);
+    let uniqueMess = db.ref('/messages').push(message);
+    console.log(uniqueMess.key);
 
   });
 
@@ -110,55 +112,49 @@ function everything(event) {
     let str;
     let like = 0;
     let dis = 0;
+    let targetId;
+
     for (let info in userData) {
-
-      console.log(`allData har en property som heter ${info}`);
-    	console.log('värdet är:' , userData[info]);
-
       str = userData[info];
 
-      output += `<div class = 'message-light'>
+      output += `<div id='${info}' class = 'message-light'>
                         <p>${str.text} <span>${str.time}</span></p>
                         <button class='likes' id='like${like++}' type="button" name="button">Like</button>
                         <button class='disLikes' id='disLike${dis++}' type="button" name="button">Dislike</button>
                       </div>`
-
     }
     htmlElement.chatContainer.innerHTML = output;
 
-    if(htmlElement.chatContainer.children.length > 0){
+    if (htmlElement.chatContainer.children.length > 0) {
       let likes = document.getElementsByClassName('likes');
       let disLikes = document.getElementsByClassName('disLikes');
-      console.log(likes);
-      console.log(disLikes);
 
-      if (likes) {
 
-      }
       for (var i = 0; i < likes.length; i++) {
-        document.getElementById('like'+ [i]).addEventListener('click', function(event){
-          console.log('I like '+ event.target.id);
+        document.getElementById('like' + [i]).addEventListener('click', function(event) {
+          targetId = event.target.parentElement.id;
 
-          
-
-          if (document.getElementById(event.target.id).style.backgroundColor !== "green") {
-            document.getElementById(event.target.id).style.backgroundColor = 'green';
-            document.getElementById(event.target.id).innerText = 'like 1';
-            message.likes++;
-          }else if (document.getElementById(event.target.id).style.backgroundColor === "green") {
-            document.getElementById(event.target.id).style.backgroundColor = 'buttonface';
-            document.getElementById(event.target.id).innerText = 'like 0';
-            message.likes--;
+          console.log('event target click like');
+          let clicked = 0;
+          if(clicked > 0){
+            event.target.style.backgroundColor = 'gray';
+            event.target.innerText = 'like 0';
+            console.log(' i turn off');
+            clicked--;
+            db.ref('/messages/' + targetId + '/likes').set(str.likes - 1);
+          }else if (clicked === 0) {
+            event.target.style.backgroundColor = 'green';
+            event.target.innerText = 'like 1';
+            console.log('i turn green');
+            clicked++;
+            db.ref('/messages/' + targetId + '/likes').set(str.likes + 1);
           }
 
 
-          //document.getElementById("likes").disabled = true;
         });
       }
     }
-
-    //documedocument.getElementById(like)tEl.addEventListener('click', )ementById("")
-  });
+  }); // Snapshot END here
 
 
 
