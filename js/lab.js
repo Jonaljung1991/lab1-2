@@ -66,7 +66,7 @@ function everything(event) {
     let weekDay = date.getDay();
     let month = date.getMonth();
     let year = date.getFullYear();
-    
+
     let d = ['Söndag','Måndag', 'Tisdag','Onsdag','Torsdag','Fredag', 'Lördag']
     let m = ['Januari', 'February', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December']
 
@@ -78,6 +78,7 @@ function everything(event) {
 
   // Message object
   let message = {
+    messageNr: 0,
     sender: 'Jon doe', // users.name
     text: '',
     likes: 0,
@@ -107,20 +108,56 @@ function everything(event) {
     htmlElement.chatContainer.innerHTML = '';
     let output = '';
     let str;
-
+    let like = 0;
+    let dis = 0;
     for (let info in userData) {
-      //console.log(`allData har en property som heter ${info}`);
-      //console.log('värdet är:', userData[info]);
+
+      console.log(`allData har en property som heter ${info}`);
+    	console.log('värdet är:' , userData[info]);
+
       str = userData[info];
 
-
-    //  console.log('userdata ', str.text);
       output += `<div class = 'message-light'>
                         <p>${str.text} <span>${str.time}</span></p>
+                        <button class='likes' id='like${like++}' type="button" name="button">Like</button>
+                        <button class='disLikes' id='disLike${dis++}' type="button" name="button">Dislike</button>
                       </div>`
 
     }
     htmlElement.chatContainer.innerHTML = output;
+
+    if(htmlElement.chatContainer.children.length > 0){
+      let likes = document.getElementsByClassName('likes');
+      let disLikes = document.getElementsByClassName('disLikes');
+      console.log(likes);
+      console.log(disLikes);
+
+      if (likes) {
+
+      }
+      for (var i = 0; i < likes.length; i++) {
+        document.getElementById('like'+ [i]).addEventListener('click', function(event){
+          console.log('I like '+ event.target.id);
+
+          
+
+          if (document.getElementById(event.target.id).style.backgroundColor !== "green") {
+            document.getElementById(event.target.id).style.backgroundColor = 'green';
+            document.getElementById(event.target.id).innerText = 'like 1';
+            message.likes++;
+          }else if (document.getElementById(event.target.id).style.backgroundColor === "green") {
+            document.getElementById(event.target.id).style.backgroundColor = 'buttonface';
+            document.getElementById(event.target.id).innerText = 'like 0';
+            message.likes--;
+          }
+
+
+          //document.getElementById("likes").disabled = true;
+        });
+      }
+    }
+
+    //documedocument.getElementById(like)tEl.addEventListener('click', )ementById("")
   });
 
 
