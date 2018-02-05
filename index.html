@@ -1,36 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Welcome to Lab 1 and 2</title>
-    <link rel="stylesheet" href="css/labStyle.css">
-    <script src="js/lab.js"></script>
-  </head>
-  <body>
-    <main>
-    <img class="logo" src="img/logo.png" alt="Chatroom logo">
-    <h1>Hello World</h1>
-    <form>
-      <label for="">Användarnamn</label>
-      <input id="userName" type="text" name="" value="">
-      <label for="">Lösenord</label>
-      <input id="password" type="text" name="" value="">
-    </form>
-    <button id="login" type="button" name="button"> Logga in</button>
-    <a id="createAccount" href="#"> Skapa konto </a>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <div class='midSection'>
-       <div class="midLine"></div>
-       <span> Eller </span>
-       <div class="midLine"></div>
-    </div>
-    <button id="signInWithGithub">Logga in med Github</button>
-    <button id="signInWithGoogle">Logga in med Google</button>
-    </main>
+  <title>Welcome to Lab 1 and 2</title>
 
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
+  <link rel="stylesheet" href="css/labStyle.css">
 
-  </body>
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+
+  <script src="js/lab.js"></script>
+</head>
+
+<body>
+
+  <main class="start-main">
+
+    <section class="start-form">
+      <img class="logo" src="img/logo.png" alt="Chatroom logo">
+      <h1>Hello World</h1>
+
+      <form>
+        <label for="">Användarnamn</label>
+        <input id="userName" type="text" name="" value="">
+        <label for="">Lösenord</label>
+        <input id="password" type="text" name="" value="">
+      </form>
+
+      <button id="login" type="button" name="button"> Logga in</button>
+      <a id="createAccount" href="create-user.html"> <em>Skapa ett konto</em> </a>
+
+      <!--<div class='midSection'>
+        <div class="midLine"></div>
+        <span> Eller </span>
+        <div class="midLine"></div>
+      </div>-->
+
+      <button id="github"> <i class="fab fa-github fa-2x" data-fa-transform=" left-20"></i> Logga in med Github</button>
+      <button id="google"><img src="img/google-icon.svg" alt="google"> Logga in med Google</button>
+      <!--<button id="google"> <i class="fab fa-google fa-2x" data-fa-transform=" left-20"></i> Logga in med Google</button>-->
+    </section>
+  </main>
+
+</body>
+
 </html>

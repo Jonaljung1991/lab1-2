@@ -1,47 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message page</title>
-    <style>
-      .likes{
-        background-color: gray;
-      }
-    </style>
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message page</title>
+  <style>
+  
+  </style>
 
-<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-<script src="js/lab.js"></script>
-<link rel="stylesheet" href="css/labStyle.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
-  </head>
-  <body>
-    <header>
-      <h1>firebase message page</h1>
-      <img src="" alt="">
-      <a id="logOut" href="index.html"> Logga ut </a>
-    </header>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script src="js/lab.js"></script>
+  <link rel="stylesheet" href="css/labStyle.css">
 
-    <main id="chatMain">
-      <div id="dateSectionChat">
-        <div class="midLine"></div> <span id="date"> datum </span><div class="midLine">
-      </div>
+</head>
+
+<body>
+  <header>
+    <nav class="chat-nav">
+      <ul class="nav-left">
+        <li> <img id="userImg" src="img/img_411076.png" alt="user image"> </li>
+        <li id="userDisplay">Jon Doe</li>
+        <li>  <a id="logOut" href="index.html"> Logga ut </a></li>
+      </ul>
+
+    </nav>
+  </header>
+
+  <section class="datum-container">
+    <div class="midLine">
+    </div>
+    <span id="date"> datum </span>
+    <div class="midLine">
+    </div>
+  </section>
+  <main id="chat-main">
+
+    <section class='chat-form'>
       <div id="container">
-
       </div>
-    </main>
 
-
-
-
-
-    <footer>
+    <div id="inputMain">
       <input id="textInput" type="text" placeholder="Skriv här . . ." value="">
       <button id="sendBtn" type="button" name="button">Send</button>
+    </div>
+  </section>
+  </main>
 
-    </footer>
+  <footer>
+  </footer>
 
 
-  </body>
+</body>
+
 </html>

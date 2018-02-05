@@ -23,10 +23,12 @@ function everything(event) {
   const htmlElement = {
     sendBtn: document.getElementById('sendBtn'),
     textInput: document.getElementById("textInput"),
-    date: document.getElementById("date"),
-    chatContainer: document.getElementById("container")
+    datum: document.getElementById("date"),
+    chatContainer: document.getElementById("container"),
+    SignInWithGithub: document.getElementById("github")
 
   }
+
 
   // THE LOGIN page code
 
@@ -60,7 +62,7 @@ function everything(event) {
   }
 
   // Date of day, month and year
-  function getDate() {
+  function datum() {
     let date = new Date();
     let day = date.getDate();
     let weekDay = date.getDay();
@@ -73,7 +75,9 @@ function everything(event) {
     return d[weekDay] + ' ' + day + ' ' + m[month] + ' ' + year;
   }
 
-  htmlElement.date.innerHTML = getDate();
+  if (document.getElementById('date')!=null) {
+    document.getElementById('date').innerHTML = datum();
+  }
 
 
   // Message object
@@ -89,41 +93,63 @@ function everything(event) {
 
 
   // Text input
-  htmlElement.textInput.addEventListener("change", function(event) {
+  if (htmlElement.textInput!= null) {
+    htmlElement.textInput.addEventListener("change", function(event) {
 
-    message.text = htmlElement.textInput.value;
-    message.time = getTime();
-  });
+      message.text = htmlElement.textInput.value;
+      message.time = getTime();
+    });
+
+  }
 
 
   // Send input
-  htmlElement.sendBtn.addEventListener("click", function(event) {
+  if (  htmlElement.sendBtn!= null) {
+    htmlElement.sendBtn.addEventListener("click", function(event) {
 
-    let uniqueMess = db.ref('/messages').push(message);
-    console.log(uniqueMess.key);
+      let uniqueMess = db.ref('/messages').push(message);
+      console.log(uniqueMess.key);
 
-  });
+    });
+  }
 
   // Input uploded to message container
-  db.ref("/messages").on("value", function(snapshot) {
+  db.ref("/messages").once("value", function(snapshot) {
+
     let userData = snapshot.val();
     htmlElement.chatContainer.innerHTML = '';
     let output = '';
     let str;
     let like = 0;
     let dis = 0;
-    let targetId;
+    //let targetId;
 
     for (let info in userData) {
       str = userData[info];
 
+      //GAMAL ÄNDRA
+
       output += `<div id='${info}' class = 'message-light'>
-                        <p>${str.text} <span>${str.time}</span></p>
-                        <button class='likes' id='like${like++}' type="button" name="button">Like</button>
-                        <button class='disLikes' id='disLike${dis++}' type="button" name="button">Dislike</button>
-                      </div>`
+                           <p>${str.text} <span>${str.time}</span></p>
+                           <button class='likes' id='like${like++}' type="button" name="button">${str.likes} Like</button>
+                           <button class='disLikes' id='disLike${dis++}' type="button" name="button">${str.dislikes}Dislike</button>
+                         </div>`;
+
+      // DAVID HJÄLP
+
+      /* let div = document.createElement('div');
+       div.innerHTML = `<p>${str.text} <span>${str.time}</span></p>
+         <button class='likes' id='like${like++}' type="button" name="button">${str.likes} Like</button>
+         <button class='disLikes' id='disLike${dis++}' type="button" name="button">${str.dislikes}Dislike</button>`;
+       htmlElement.chatContainer.appendChild(div);
+       let likeBtn = div.getElementsByTagName('button')[0];
+       // om användaren har klickat på like-knappen
+       likeBtn.style.backgroundColor = 'lime';*/
+       // annars grå
     }
+    //GAMAL ÄNDRA
     htmlElement.chatContainer.innerHTML = output;
+
 
     if (htmlElement.chatContainer.children.length > 0) {
       let likes = document.getElementsByClassName('likes');
@@ -131,30 +157,86 @@ function everything(event) {
 
 
       for (var i = 0; i < likes.length; i++) {
-        document.getElementById('like' + [i]).addEventListener('click', function(event) {
-          targetId = event.target.parentElement.id;
-
-          console.log('event target click like');
-          let clicked = 0;
-          if(clicked > 0){
-            event.target.style.backgroundColor = 'gray';
-            event.target.innerText = 'like 0';
-            console.log(' i turn off');
-            clicked--;
-            db.ref('/messages/' + targetId + '/likes').set(str.likes - 1);
-          }else if (clicked === 0) {
+        document.getElementById('like' + i).addEventListener('click', function(event) {
+          const targetId = event.target.parentElement.id;
+          const messLike = userData[targetId].likes;
+          console.log('targetId ',targetId, ', messlike=', messLike);
+          //console.log('likes är ',db.ref('/messages/' + targetId + '/likes'));
+event.target.style.backgroundColor = 'pink';
+event.target.style.border = '4px solid red;';
+console.log('bgcolor='+event.target.style.backgroundColor+', element=', event.target);
+          if (event.target.style.backgroundColor != 'green') {
             event.target.style.backgroundColor = 'green';
-            event.target.innerText = 'like 1';
-            console.log('i turn green');
-            clicked++;
-            db.ref('/messages/' + targetId + '/likes').set(str.likes + 1);
-          }
 
+            console.log(' i like');
+            console.log('before ', messLike);
+            // kanske off
+            db.ref('/messages/' + targetId + '/likes').set(messLike +1);
+            console.log('after ',messLike);
+          } else {
+//            event.target.style.backgroundColor = 'gray';
+
+            console.log('i unLike');
+            console.log('before ', messLike);
+            db.ref('/messages/' + targetId + '/likes').set(messLike - 1);
+            console.log('after ', messLike);
+          }
 
         });
       }
     }
   }); // Snapshot END here
+
+
+//LOGGA IN
+if (htmlElement.SignInWithGithub !=null) {
+
+    // Authenticate code
+    let provider = new firebase.auth.GithubAuthProvider();
+    provider.setCustomParameters({ // optional
+      'allow_signup': 'true'
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        window.location = 'chat.html'; //After successful login, user will be redirected to home.html
+        // User is signed in.
+        var displayName = user.displayName;
+        var email = user.email;
+        var emailVerified = user.emailVerified;
+        var photoURL = user.photoURL;
+        var isAnonymous = user.isAnonymous;
+        var uid = user.uid;
+        var providerData = user.providerData;
+        console.log('onAuthStateChanged: user is signed in', user);
+
+        // ...
+      } else {
+        // User is signed out.
+        // ...
+        console.log('onAuthStateChanged: user is signed out');
+      }
+    });
+
+    htmlElement.SignInWithGithub.addEventListener("click", function(event) {
+      firebase.auth().signInWithRedirect(provider);
+    })
+
+}
+
+
+  // LOGGA UT
+  if (document.getElementById('logOut')!=null) {
+    document.getElementById('logOut').addEventListener('click', function(event) {
+      firebase.auth().signOut().then(function(result) {
+        console.log('Signed out user');
+      })
+      .catch(function(error) {
+        console.log('Signout failed');
+      })
+    })
+
+  }
 
 
 
