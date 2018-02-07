@@ -116,11 +116,11 @@ function everything(event) {
   });
 
   var userIdInfo = {
-    name:"Anonymous user",
-    photo:'img_411076.png',
-    userId:'1',
+    name: "Anonymous user",
+    photo: 'img_411076.png',
+    userId: '1',
 
-    userUnlike:0,
+    userUnlike: 0,
     userLike: 0,
     btnClassLike: 'btnlikes',
     btnClassUnlike: 'btnUnlikes'
@@ -155,16 +155,16 @@ function everything(event) {
         document.getElementById('userImg').style.backgroundColor = '#fff';
 
       }
-      if (displayName!= null) {
+      if (displayName != null) {
         document.getElementById('userDisplay').innerText = displayName;
         userIdInfo.name = displayName;
-      }else {
+      } else {
         document.getElementById("userDisplay").innerText = "Anonymous user";
 
       }
-      if (uid!= null) {
+      if (uid != null) {
         userIdInfo.userId = uid;
-      }else {
+      } else {
         document.getElementById("userDisplay").innerText = "Anonymous user";
 
       }
@@ -245,12 +245,14 @@ function everything(event) {
   }
 
 
-console.log('userIdInfo ',userIdInfo);
+  console.log('userIdInfo ', userIdInfo);
 
   // Message object
   let message = {
     sender: userIdInfo,
     text: '',
+    likeList: 0,
+    unlikeList: 0,
     likes: {
       value: 0,
     },
@@ -296,7 +298,7 @@ console.log('userIdInfo ',userIdInfo);
 
     for (let info in userData) {
       str = userData[info];
-      console.log('str = ', str);
+      //console.log('str = ', str);
 
 
       let div = document.createElement('div');
@@ -314,26 +316,66 @@ console.log('userIdInfo ',userIdInfo);
 
         let messageId = event.target.parentElement.id;
         // let userLike = userData[messageId].likes;
-        console.log('btnClass = ', snapshot.val()[messageId].likes.btnClass);
+        //console.log('btnClass = ', snapshot.val()[messageId].sender.btnClass);
 
 
-        if (snapshot.val()[messageId].sender.btnClassLike == 'btnlikes') {
 
-          db.ref('/messages/' + messageId + '/sender/btnClassLike').set('btnLikeClicked');
-          db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 1);
+        var likelist = snapshot.val()[messageId].likeList;
+        console.log(likelist);
 
-          if (snapshot.val()[messageId].sender.userId && snapshot.val()[messageId].sender.userLike == 1) {
-            db.ref('/messages/' + messageId + '/likes/value').set(snapshot.val()[messageId].likes.value + 1);
+        if (likelist && likelist.hasOwnProperty(userIdInfo.userId)) {
+
+          //db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 0);
+
+          //db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(0);
+
+          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
+
+          if (likelist == null) {
+            console.log('likelist existerar');
+            likelist = snapshot.val()[messageId].likeList;
+            let val = Object.keys(likelist).length;
+            console.log('val = '+val);
+            val = 0;
+            db.ref('/messages/' + messageId + '/likes/value').set(val);
+          }else {
+            likelist = snapshot.val()[messageId].likeList;
+            let val = Object.keys(likelist).length;
+            console.log('val = '+val);
+
+            db.ref('/messages/' + messageId + '/likes/value').set(val);
           }
 
         } else {
-          db.ref('/messages/' + messageId + '/sender/btnClassLike').set('btnlikes');
-          db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 0);
+        //db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 1);
 
-          if (snapshot.val()[messageId].sender.userId && snapshot.val()[messageId].sender.userLike == 0) {
-            db.ref('/messages/' + messageId + '/likes/value').set(snapshot.val()[messageId].likes.value -1);
+          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1);
+
+          if (likelist == null) {
+            console.log('likelist existerar');
+            likelist = snapshot.val()[messageId].likeList;
+            let val = Object.keys(likelist).length;
+            console.log('val = '+val);
+            val = 0;
+            db.ref('/messages/' + messageId + '/likes/value').set(val);
+          }else {
+            likelist = snapshot.val()[messageId].likeList;
+            let val = Object.keys(likelist).length;
+            console.log('val = '+val);
+
+            db.ref('/messages/' + messageId + '/likes/value').set(val);
           }
+
+          /*if (likelist != null) {
+            console.log('likelist existerar');
+            likelist = snapshot.val()[messageId].likeList;
+            let val = Object.keys(likelist).length;
+            console.log('val = '+val);
+            db.ref('/messages/' + messageId + '/likes/value').set(val);
+          }*/
         }
+
+
       });
 
       unlikeBtn.addEventListener('click', function(event) {
