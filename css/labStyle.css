@@ -17,68 +17,69 @@ a {
 .start-main {
   height: 100vh;
   width: 100vw;
-
-
   background: url(../img/goteburg.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  align-content: center;
 }
 
 .create-main {
   height: 100vh;
   width: 100vw;
-
-
   background: url(../img/goteburg.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-
   display: flex;
   justify-content: center;
   align-items: center;
   align-content: center;
 }
-#chat-main {
+
+/*#chat-main {
   height: 100vh;
   width: 100vw;
-
   background-color: #f4f4f4;
   /*background: url(../img/goteburg.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;*/
-
+  background-size: cover;
   display: flex;
   justify-content: center;
   padding-top: 5rem;
-}
+}*/
 
 .start-form {
+
+  margin-top: 1rem;
   background-color: #fff;
   border-radius: 5px;
   padding: 10px;
-  height: 85vh;
-  max-height: 85vh;
+  height: 80vh;
+  max-height: 80vh;
   width: 45%;
   text-align: center;
   overflow: auto;
   overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content:flex-start;
+
+  align-items: center;
+
+}
+.start-form>*{
+  border: 2px solid red;
 }
 
-.start-form>h1 {
-  font-family: monospace;
-  margin: 0 0 1rem 0;
-}
 
 .start-form>form>input {
   padding: 5px 5px 3px 5px;
@@ -94,20 +95,39 @@ a {
   transform: translate(-50%, 0);
 }
 
-#login {
+div#loginDiv {
 
+
+  display: flex;
+
+  flex-direction: row;
+  align-items: flex-start;
+}
+div#loginDiv>* {
+  border: 2px solid green;
+}
+#loginDiv > * {
+  flex: 1 1 auto;
+}
+/*
+*/
+#login {
+  align-self: flex-start;
   background-color: navy;
   color: #fff;
-
-  padding: 0.5rem 4.3rem;
+  padding: 0.5rem 2rem;
+  margin: 0.5rem 1rem;
   border-radius: 5px;
   text-align: center;
-}
-#createBtn{
-  background-color: orange;
-  color: #fff;
 
-  padding: 0.5rem 4.3rem;
+}
+
+#createUser {
+  align-self: flex-start;
+  background-color: gray;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 1rem;
   border-radius: 5px;
   text-align: center;
 }
@@ -118,99 +138,135 @@ a {
   display: block;
 }
 
-#github{
+#github {
   margin-top: 2rem;
   background-color: #000;
   color: #fff;
   border: none;
   font-size: 15px;
-
   padding: 0.5rem 3rem;
+
   border-radius: 5px;
 
+
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#google{
+#google {
   margin-top: 0.5rem;
   background-color: #000;
   color: #fff;
   border: none;
   font-size: 15px;
-
   padding: 0.5rem 3rem 0.5rem 0.8rem;
   border-radius: 5px;
 
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-#google img{
+
+#google img {
   width: 25px;
   margin-right: 37px;
   margin-left: 0;
 }
 
-
 .logo {
   width: 70px;
 }
-
-
 /* Bara på chatsidan */
 
 header {
   z-index: 1;
+  position: fixed;
+  top: 0;
   width: 100%;
-  height: 5rem;
-  background-color: powderblue;
+  height:50px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-content: center;
 }
 
-.nav-left{
-  display: flex;
+#userImg{
+  width: 2.5rem;
+}
+#userDisplay{
+  font-size: 1.5em;
+  font-family: monospace;
+  padding-left: 1rem;
+}
+#logOut {
+  display: none;
+  color: #fff;
+  margin-left: 6rem;
+  font-style: italic;
+  transition: 0.4s;
+}
+#logOut:hover {
+  font-size: 1.5em;
+  color: gold;
 
+
+}
+
+
+.nav-left {
+  position: relative;
+  height: 100%;
+  display: flex;
   justify-content: flex-start;
   list-style: none;
+  align-content: center;
   align-items: center;
 }
 
-.nav-left>li>img{
-  margin: 0 1rem 0 1rem;
-  width: 40px;
+
+.nav-left li {
+  color: #fff;
 }
 
-.nav-left li{
-
-}
-
-
-
-.datum-container{
+.datum-container {
   width: 100%;
-  z-index: 1;
+  margin-top: 3rem;
   display: flex;
   justify-content: center;
   align-items: center;
   align-content: center;
-
 }
 
+
 .chat-form {
+  display: none;
+  margin-top: 1rem;
   background-color: #fff;
   border-radius: 5px;
   padding: 10px;
-  height: 50vh;
-  max-height: 70vh;
+  height: 80vh;
+  max-height: 80vh;
   width: 45%;
   text-align: left;
   overflow: auto;
   overflow-x: hidden;
 }
+
+.sentMess{
+  background-color: #f4f4f4;
+  margin: 10px 0;
+  padding: 10px;
+
+}
+.sentMess p{
+  color: #000;
+  margin: 10px;
+}
+
 
 .midLine {
   margin: 0 15px;
@@ -223,39 +279,36 @@ header {
   margin: 3rem 0;
 }
 
-#logOut {
-  margin-left:6rem;
-  font-weight: bold;
-}
-
 
 /* LIKE DISLIKE BTN*/
 
 /*Like*/
-button.like{
-  
-}
-button.like:hover{
 
+button.btnlikes {
+  background-color: pink;
 }
 
-button.likeClicked{
+button.btnlikes:hover {
+  background-color: powderblue;
+}
 
+button.btnLikeClicked {
+  background-color: lime;
 }
 
 /*Dislike*/
 
-button.dislike{
-
-}
-button.dislike:hover{
-
+button.btnUnlikes {
+  background-color: red;
 }
 
-button.dislikeClicked{
-
+button.btnUnlikes:hover {
+  background-color: gold;
 }
 
+button.btnUnlikeClicked {
+  background-color: orange;
+}
 
 footer {
   display: flex;
@@ -264,17 +317,15 @@ footer {
   align-items: center;
 }
 
-@media screen and (max-width: 628px) and (min-width: 415px) {
+@media screen and (max-width: 768px) and (min-width: 415px) {
   .start-form {
     width: 70%;
     height: 85vh;
   }
-
   .chat-form {
     width: 70%;
     height: 85vh;
   }
-
 }
 
 @media screen and (max-width: 415px) {
@@ -282,7 +333,6 @@ footer {
     width: 95%;
     height: 95vh;
   }
-
   .chat-form {
     width: 95%;
     height: 95vh;
