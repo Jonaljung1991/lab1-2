@@ -31,6 +31,7 @@ function everything(event) {
     datum: document.getElementById("date"),
     chatContainer: document.getElementById("container"),
     userImg: document.getElementById("userImg"),
+    chatForm:document.getElementsByClassName('chat-form')[0],
 
     // LOGIN PAGE
     mail: document.getElementById('mail'),
@@ -38,8 +39,10 @@ function everything(event) {
     login: document.getElementById('login'),
     createUser: document.getElementById('createUser'),
     SignInWithGithub: document.getElementById("github"),
-    signInWithGoogle: document.getElementById('google')
+    signInWithGoogle: document.getElementById('google'),
+    signInWithFacebook: document.getElementById('face')
   }
+
 
   var userIdInfo = {
     name: "Anonymous user",
@@ -49,6 +52,7 @@ function everything(event) {
     btnClassLike: 'btnlikes',
     btnClassUnlike: 'btnUnlikes'
   }
+
 
   //LOGGA IN
 
@@ -70,6 +74,12 @@ function everything(event) {
       // ...
     }
     // The signed-in user info.
+
+    let googleProvider = new firebase.auth.GoogleAuthProvider();
+    htmlElement.signInWithGoogle.addEventListener('click', function(event) {
+      firebase.auth().signInWithRedirect(googleProvider);
+    });
+
     var user = result.user;
   }).catch(function(error) {
     // Handle Errors here.
@@ -87,11 +97,6 @@ function everything(event) {
   });
 
   // Authenticate Google code
-  let googleProvider = new firebase.auth.GoogleAuthProvider();
-
-  htmlElement.signInWithGoogle.addEventListener('click', function(event) {
-    firebase.auth().signInWithRedirect(googleProvider);
-  });
 
   firebase.auth().getRedirectResult().then(function(result) {
     if (result.credential) {
@@ -115,7 +120,11 @@ function everything(event) {
   //...
 
   // Authenticate Facebook code
+  let facebookProvider = new firebase.auth.FacebookAuthProvider();
 
+  htmlElement.signInWithFacebook.addEventListener('click', function(event) {
+    firebase.auth().signInWithRedirect(facebookProvider);
+  });
   //...
 
   // The auth Listener
@@ -142,22 +151,27 @@ function everything(event) {
         document.getElementById('userImg').style.backgroundColor = '#fff';
 
         userIdInfo.photo = photoURL;
+
       } else {
         document.getElementById('userImg').src = 'img_411076.png';
         document.getElementById('userImg').style.backgroundColor = '#fff';
 
+        userIdInfo.photo = 'img_411076.png';
       }
       if (displayName != null) {
         document.getElementById('userDisplay').innerText = displayName;
         userIdInfo.name = displayName;
+
       } else {
         document.getElementById("userDisplay").innerText = "Anonymous user";
 
       }
       if (uid != null) {
         userIdInfo.userId = uid;
+
       } else {
         document.getElementById("userDisplay").innerText = "Anonymous user";
+
       }
 
       // ...
@@ -246,11 +260,12 @@ function everything(event) {
 
   }
 
-
+  let userSend;
   // Send input
   if (htmlElement.sendBtn != null) {
     htmlElement.sendBtn.addEventListener("click", function(event) {
 
+      userSend = userIdInfo.name;
       let uniqueMess = db.ref('/messages').push(message);
       console.log(uniqueMess.key);
 
@@ -259,6 +274,8 @@ function everything(event) {
 
   // Fetch input
   db.ref("/messages").on("value", function(snapshot) {
+
+    console.log('message updated');
 
     let userData = snapshot.val();
     htmlElement.chatContainer.innerHTML = '';
@@ -279,9 +296,12 @@ function everything(event) {
       let div = document.createElement('div');
       div.id = info;
       div.className = 'sentMess';
-      div.innerHTML = `<p>${str.text} <span>${str.time}</span></p>
+      div.innerHTML = `<div class='userDiv'><h3>${str.sender.name}</h3> <span>${str.time}</span></div>
+        <div class='textDiv'><p>${str.text}</p></div>
+        <div class='like-disBtnDiv'>
         <button class=${str.sender.btnClassLike} id='like${like++}' type="button" name="button">${str.likes.value} Likes</button>
-        <button class=${str.sender.btnClassUnlike} id='disLike${dis++}' type="button" name="button">${str.dislikes.value} Dislikes</button>`;
+        <button class=${str.sender.btnClassUnlike} id='disLike${dis++}' type="button" name="button">${str.dislikes.value} Dislikes</button>
+        </div>`;
 
       let likeBtn = div.getElementsByTagName('button')[0];
       let unlikeBtn = div.getElementsByTagName('button')[1];
@@ -290,7 +310,7 @@ function everything(event) {
       // Like Knapp
       likeBtn.addEventListener('click', function(event) {
 
-        messageId = event.target.parentElement.id;
+        messageId = event.target.parentElement.parentElement.id;
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
 
@@ -307,12 +327,15 @@ function everything(event) {
             db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
           } else if (likelist == undefined || likelist == 0) {
             db.ref('/messages/' + messageId + '/likes/value').set(0);
-          }else {
+          } else {
             console.log('i am nothing');
           }
         } else {
 
-          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1)
+          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1).then(function(response) {
+            console.log('response är =', response);
+            console.log(response);
+          });
 
           if (likelist == undefined || likelist == 0) {
             val = 0;
@@ -346,7 +369,7 @@ function everything(event) {
 
       // Unlike knapp
       unlikeBtn.addEventListener('click', function(event) {
-        messageId = event.target.parentElement.id;
+        messageId = event.target.parentElement.parentElement.id;
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
         console.log(userIdInfo.userId);
@@ -362,11 +385,11 @@ function everything(event) {
             val = Object.keys(unlikelist).length;
             console.log('val = ' + val);
             db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
-          } else if (unlikelist == undefined || unlikelist == 0){
+          } else if (unlikelist == undefined || unlikelist == 0) {
             console.log('unlikelist is undefined');
             // koden här kommer aldrig att köras för listan blir adrig undefined i det hör stadiet
             db.ref('/messages/' + messageId + '/dislikes/value').set(0);
-          }else {
+          } else {
             console.log('i am nothing');
           }
         } else {
@@ -381,7 +404,7 @@ function everything(event) {
               val = Object.keys(likelist).length;
               if (likelist.hasOwnProperty(userIdInfo.userId)) {
                 db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
-                db.ref('/messages/' + messageId + '/likes/value').set(val-1);
+                db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
               }
             }
             //  console.log('when you unlike unlikelist is ', unlikelist);
@@ -393,7 +416,7 @@ function everything(event) {
             if (likelist) {
               if (likelist.hasOwnProperty(userIdInfo.userId)) {
                 db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
-                db.ref('/messages/' + messageId + '/likes/value').set(val-1);
+                db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
               }
             }
             //console.log('when you unlike unlikelist is ', unlikelist);
@@ -406,6 +429,8 @@ function everything(event) {
 
       htmlElement.chatContainer.appendChild(div);
     }
+    window.scrollTo(0,document.body.scrollHeight);
+    htmlElement.chatForm.scrollTop = htmlElement.chatForm.scrollHeight;
 
   }); // Snapshot END here
 
