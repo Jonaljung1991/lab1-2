@@ -37,51 +37,22 @@ function everything(event) {
     password: document.getElementById('password'),
     login: document.getElementById('login'),
     createUser: document.getElementById('createUser'),
-    SignInWithGithub: document.getElementById("github")
+    SignInWithGithub: document.getElementById("github"),
+    signInWithGoogle: document.getElementById('google')
   }
 
+  var userIdInfo = {
+    name: "Anonymous user",
+    photo: 'img_411076.png',
+    userId: '1',
 
-  // THE LOGIN page code
-
-  htmlElement.login.addEventListener('click', function(event) {
-    const email = htmlElement.mail.value;
-    const pass = htmlElement.password.value;
-    const auth = firebase.auth();
-
-    auth.signInWithEmailAndPassword(email, pass).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert('Invalid user or ' + errorMessage + '.');
-      console.log(errorCode);
-      console.log(errorMessage);
-      // ...
-    });
-
-  });
-
-
-  htmlElement.createUser.addEventListener('click', function(event) {
-    const email = htmlElement.mail.value;
-    const pass = htmlElement.password.value;
-    const auth = firebase.auth();
-
-    auth.createUserWithEmailAndPassword(email, pass).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-      // ...
-    });
-
-  });
-
-
+    btnClassLike: 'btnlikes',
+    btnClassUnlike: 'btnUnlikes'
+  }
 
   //LOGGA IN
 
-  // Authenticate code
+  // Authenticate GIthub code
   let provider = new firebase.auth.GithubAuthProvider();
   provider.setCustomParameters({ // optional
     'allow_signup': 'true'
@@ -115,18 +86,39 @@ function everything(event) {
     // ...
   });
 
-  var userIdInfo = {
-    name: "Anonymous user",
-    photo: 'img_411076.png',
-    userId: '1',
+  // Authenticate Google code
+  let googleProvider = new firebase.auth.GoogleAuthProvider();
 
-    userUnlike: 0,
-    userLike: 0,
-    btnClassLike: 'btnlikes',
-    btnClassUnlike: 'btnUnlikes'
-  }
+  htmlElement.signInWithGoogle.addEventListener('click', function(event) {
+    firebase.auth().signInWithRedirect(googleProvider);
+  });
 
+  firebase.auth().getRedirectResult().then(function(result) {
+    if (result.credential) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // ...
+    }
+    // The signed-in user info.
+    var user = result.user;
+  }).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
 
+  //...
+
+  // Authenticate Facebook code
+
+  //...
+
+  // The auth Listener
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
@@ -166,46 +158,26 @@ function everything(event) {
         userIdInfo.userId = uid;
       } else {
         document.getElementById("userDisplay").innerText = "Anonymous user";
-
       }
 
-
-      //window.location = 'chat.html'; //After successful login, user will be redirected to home.html
       // ...
     } else {
-
       // ...
       console.log('onAuthStateChanged: user is signed out');
     }
   });
 
 
-
-
-
-
   // LOGGA UT
-  if (document.getElementById('logOut') != null) {
-    document.getElementById('logOut').addEventListener('click', function(event) {
-      firebase.auth().signOut().then(function(result) {
-          console.log('Signed out user');
-        })
-        .catch(function(error) {
-          console.log('Signout failed');
-        })
-    })
+  document.getElementById('logOut').addEventListener('click', function(event) {
+    firebase.auth().signOut().then(function(result) {
+        console.log('Signed out user');
+      })
+      .catch(function(error) {
+        console.log('Signout failed');
+      })
+  })
 
-  }
-
-  // code to se user and and check authorisation
-
-  // THE CEATE account page code
-
-  // code to create and puch a new user to the database and check if the username exist allready
-
-
-
-  // THE CHAT ROOM code
 
   // Time Element
   function getTime() {
@@ -285,122 +257,162 @@ function everything(event) {
     });
   }
 
-
+  // Fetch input
   db.ref("/messages").on("value", function(snapshot) {
 
     let userData = snapshot.val();
     htmlElement.chatContainer.innerHTML = '';
     let output = '';
     let str;
+    let val;
     let like = 0;
     let dis = 0;
+    var likelist;
+    var unlikelist;
+    var messageId;
+
     //let targetId;
 
     for (let info in userData) {
       str = userData[info];
-      //console.log('str = ', str);
-
 
       let div = document.createElement('div');
       div.id = info;
       div.className = 'sentMess';
       div.innerHTML = `<p>${str.text} <span>${str.time}</span></p>
-        <button class=${str.sender.btnClassLike} id='like${like++}' type="button" name="button">${str.likes.value} Like</button>
-        <button class=${str.sender.btnClassUnlike} id='disLike${dis++}' type="button" name="button">${str.dislikes.value}Dislike</button>`;
+        <button class=${str.sender.btnClassLike} id='like${like++}' type="button" name="button">${str.likes.value} Likes</button>
+        <button class=${str.sender.btnClassUnlike} id='disLike${dis++}' type="button" name="button">${str.dislikes.value} Dislikes</button>`;
 
       let likeBtn = div.getElementsByTagName('button')[0];
       let unlikeBtn = div.getElementsByTagName('button')[1];
-      //likeBtn.style.backgroundColor = 'lime';
 
+
+      // Like Knapp
       likeBtn.addEventListener('click', function(event) {
 
-        let messageId = event.target.parentElement.id;
-        // let userLike = userData[messageId].likes;
-        //console.log('btnClass = ', snapshot.val()[messageId].sender.btnClass);
+        messageId = event.target.parentElement.id;
+        likelist = userData[messageId].likeList;
+        unlikelist = userData[messageId].unlikeList;
 
-
-
-        var likelist = snapshot.val()[messageId].likeList;
-        console.log(likelist);
+        console.log('likelist is ', likelist);
+        console.log('unlikelist is', unlikelist);
 
         if (likelist && likelist.hasOwnProperty(userIdInfo.userId)) {
 
-          //db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 0);
-
-          //db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(0);
-
           db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
 
-          if (likelist == null) {
-            console.log('likelist existerar');
-            likelist = snapshot.val()[messageId].likeList;
-            let val = Object.keys(likelist).length;
-            console.log('val = '+val);
-            val = 0;
-            db.ref('/messages/' + messageId + '/likes/value').set(val);
+          if (likelist != undefined) {
+            val = Object.keys(likelist).length;
+            console.log('val = ' + val);
+            db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
+          } else if (likelist == undefined || likelist == 0) {
+            db.ref('/messages/' + messageId + '/likes/value').set(0);
           }else {
-            likelist = snapshot.val()[messageId].likeList;
-            let val = Object.keys(likelist).length;
-            console.log('val = '+val);
-
-            db.ref('/messages/' + messageId + '/likes/value').set(val);
+            console.log('i am nothing');
           }
-
         } else {
-        //db.ref('/messages/' + messageId + '/sender/userLike').set(snapshot.val()[messageId].sender.userLike = 1);
 
-          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1);
+          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1)
 
-          if (likelist == null) {
-            console.log('likelist existerar');
-            likelist = snapshot.val()[messageId].likeList;
-            let val = Object.keys(likelist).length;
-            console.log('val = '+val);
+          if (likelist == undefined || likelist == 0) {
             val = 0;
-            db.ref('/messages/' + messageId + '/likes/value').set(val);
-          }else {
-            likelist = snapshot.val()[messageId].likeList;
-            let val = Object.keys(likelist).length;
-            console.log('val = '+val);
-
-            db.ref('/messages/' + messageId + '/likes/value').set(val);
+            db.ref('/messages/' + messageId + '/likes/value').set(val + 1);
+            if (unlikelist) {
+              val = Object.keys(unlikelist).length;
+              if (unlikelist.hasOwnProperty(userIdInfo.userId)) {
+                db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).remove();
+                console.log('disLike before minus ', val);
+                db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
+              }
+            }
+            //  console.log('when you like unlikelist is ', unlikelist);
+            //console.log(' when you like likelist is ', likelist);
+          } else if (likelist != undefined) {
+            val = Object.keys(likelist).length;
+            db.ref('/messages/' + messageId + '/likes/value').set(val + 1);
+            if (unlikelist) {
+              if (unlikelist.hasOwnProperty(userIdInfo.userId)) {
+                db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).remove();
+                db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
+              }
+            }
+            //db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
+            //  console.log('when you like unlikelist is ', unlikelist);
+            //console.log(' when you like likelist is ', likelist);
           }
-
-          /*if (likelist != null) {
-            console.log('likelist existerar');
-            likelist = snapshot.val()[messageId].likeList;
-            let val = Object.keys(likelist).length;
-            console.log('val = '+val);
-            db.ref('/messages/' + messageId + '/likes/value').set(val);
-          }*/
         }
-
-
       });
 
+
+      // Unlike knapp
       unlikeBtn.addEventListener('click', function(event) {
+        messageId = event.target.parentElement.id;
+        likelist = userData[messageId].likeList;
+        unlikelist = userData[messageId].unlikeList;
+        console.log(userIdInfo.userId);
 
-        let messageId = event.target.parentElement.id;
-        // let userLike = userData[messageId].likes;
+        //console.log('unlikelist is ', unlikelist);
 
+        if (unlikelist && unlikelist.hasOwnProperty(userIdInfo.userId)) {
 
+          db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).remove();
 
-        if (snapshot.val()[messageId].sender.btnClassUnlike == 'btnUnlikes') {
-
-          db.ref('/messages/' + messageId + '/sender/btnClassUnlike').set('btnUnlikeClicked');
-          db.ref('/messages/' + messageId + '/sender/userUnlike').set(snapshot.val()[messageId].sender.userunlike = 1);
-
+          //ställ i manuelt att det minskar
+          if (unlikelist != undefined) {
+            val = Object.keys(unlikelist).length;
+            console.log('val = ' + val);
+            db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
+          } else if (unlikelist == undefined || unlikelist == 0){
+            console.log('unlikelist is undefined');
+            // koden här kommer aldrig att köras för listan blir adrig undefined i det hör stadiet
+            db.ref('/messages/' + messageId + '/dislikes/value').set(0);
+          }else {
+            console.log('i am nothing');
+          }
         } else {
-          db.ref('/messages/' + messageId + '/sender/btnClassUnlike').set('btnUnlikes');
-          db.ref('/messages/' + messageId + '/sender/userUnlike').set(snapshot.val()[messageId].sender.userunlike = 0);
 
+          db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).set(1)
+
+          //ställ i manuelt att det ökar och glöm inte att listan här existerar men registreras som undefined ibland.
+          if (unlikelist == undefined || unlikelist == 0) {
+            val = 0;
+            db.ref('/messages/' + messageId + '/dislikes/value').set(val + 1);
+            if (likelist) {
+              val = Object.keys(likelist).length;
+              if (likelist.hasOwnProperty(userIdInfo.userId)) {
+                db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
+                db.ref('/messages/' + messageId + '/likes/value').set(val-1);
+              }
+            }
+            //  console.log('when you unlike unlikelist is ', unlikelist);
+            //  console.log(' when you unlike likelist is ', likelist);
+            //  db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
+          } else if (unlikelist != undefined) {
+            val = Object.keys(unlikelist).length;
+            db.ref('/messages/' + messageId + '/dislikes/value').set(val + 1);
+            if (likelist) {
+              if (likelist.hasOwnProperty(userIdInfo.userId)) {
+                db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
+                db.ref('/messages/' + messageId + '/likes/value').set(val-1);
+              }
+            }
+            //console.log('when you unlike unlikelist is ', unlikelist);
+            //console.log(' when you unlike likelist is ', likelist);
+            //  db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
+          }
         }
+
       });
 
       htmlElement.chatContainer.appendChild(div);
     }
 
   }); // Snapshot END here
+
+
+
+
+
 
 
 

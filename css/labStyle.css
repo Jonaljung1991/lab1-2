@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  /*  box-sizing: border-box;*/
 }
 
 body {
@@ -28,36 +28,7 @@ a {
   align-items: center;
 }
 
-.create-main {
-  height: 100vh;
-  width: 100vw;
-  background: url(../img/goteburg.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-}
-
-/*#chat-main {
-  height: 100vh;
-  width: 100vw;
-  background-color: #f4f4f4;
-  /*background: url(../img/goteburg.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  padding-top: 5rem;
-}*/
-
 .start-form {
-
   margin-top: 1rem;
   background-color: #fff;
   border-radius: 5px;
@@ -68,87 +39,34 @@ a {
   text-align: center;
   overflow: auto;
   overflow-x: hidden;
-
   display: flex;
   flex-direction: column;
-  justify-content:flex-start;
-
+  justify-content: flex-start;
   align-items: center;
-
-}
-.start-form>*{
-  border: 2px solid red;
 }
 
-
-.start-form>form>input {
-  padding: 5px 5px 3px 5px;
-  border-radius: 3px;
-  margin: 5px 0 20px;
-  width: 12rem;
-}
-
-.start-form button, .start-form input {
-  display: block;
-  position: relative;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
-
-div#loginDiv {
-
-
+#face {
+  margin-top: 2rem;
+  background-color: #3b5998;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  padding: 0.5rem 2rem 0.5rem 3rem;
+  border-radius: 5px;
+  align-self: center;
   display: flex;
-
-  flex-direction: row;
-  align-items: flex-start;
-}
-div#loginDiv>* {
-  border: 2px solid green;
-}
-#loginDiv > * {
-  flex: 1 1 auto;
-}
-/*
-*/
-#login {
-  align-self: flex-start;
-  background-color: navy;
-  color: #fff;
-  padding: 0.5rem 2rem;
-  margin: 0.5rem 1rem;
-  border-radius: 5px;
-  text-align: center;
-
-}
-
-#createUser {
-  align-self: flex-start;
-  background-color: gray;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 1rem;
-  border-radius: 5px;
-  text-align: center;
-}
-
-#createAccount {
-  color: navy;
-  margin: 1rem 0;
-  display: block;
+  align-items: center;
+  justify-content: center;
 }
 
 #github {
-  margin-top: 2rem;
-  background-color: #000;
+  margin-top: 1rem;
+  background-color: #333333;
   color: #fff;
   border: none;
   font-size: 15px;
   padding: 0.5rem 3rem;
-
   border-radius: 5px;
-
-
   align-self: center;
   display: flex;
   align-items: center;
@@ -156,14 +74,13 @@ div#loginDiv>* {
 }
 
 #google {
-  margin-top: 0.5rem;
-  background-color: #000;
-  color: #fff;
+  margin-top: 1rem;
+  background-color: #e7e6dd;
+  color: #000;
   border: none;
   font-size: 15px;
   padding: 0.5rem 3rem 0.5rem 0.8rem;
   border-radius: 5px;
-
   align-self: center;
   display: flex;
   align-items: center;
@@ -176,17 +93,12 @@ div#loginDiv>* {
   margin-left: 0;
 }
 
-.logo {
-  width: 70px;
-}
-/* Bara på chatsidan */
-
 header {
   z-index: 1;
   position: fixed;
   top: 0;
   width: 100%;
-  height:50px;
+  height: 50px;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 0.5rem;
   display: flex;
@@ -194,14 +106,20 @@ header {
   align-content: center;
 }
 
-#userImg{
+.logo {
+  width: 70px;
+}
+
+#userImg {
   width: 2.5rem;
 }
-#userDisplay{
+
+#userDisplay {
   font-size: 1.5em;
   font-family: monospace;
   padding-left: 1rem;
 }
+
 #logOut {
   display: none;
   color: #fff;
@@ -209,13 +127,11 @@ header {
   font-style: italic;
   transition: 0.4s;
 }
+
 #logOut:hover {
   font-size: 1.5em;
   color: gold;
-
-
 }
-
 
 .nav-left {
   position: relative;
@@ -226,7 +142,6 @@ header {
   align-content: center;
   align-items: center;
 }
-
 
 .nav-left li {
   color: #fff;
@@ -240,7 +155,6 @@ header {
   align-items: center;
   align-content: center;
 }
-
 
 .chat-form {
   display: none;
@@ -256,29 +170,41 @@ header {
   overflow-x: hidden;
 }
 
-.sentMess{
+.sentMess:nth-child(odd) {
   background-color: #f4f4f4;
-  margin: 10px 0;
+  margin: 15px 0;
   padding: 10px;
-
 }
-.sentMess p{
+
+
+.sentMess p {
   color: #000;
   margin: 10px;
+  float: left;
+}
+.sentMess button{
+
 }
 
+.datum-container {
+  width: 100%;
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
 
 .midLine {
   margin: 0 15px;
   display: inline-block;
   width: 120px;
-  border-top: 1.5px solid grey;
+  border-top: 1.5px solid #000;
 }
 
-.midSection {
+/*.midSection {
   margin: 3rem 0;
-}
-
+}*/
 
 /* LIKE DISLIKE BTN*/
 
@@ -286,29 +212,25 @@ header {
 
 button.btnlikes {
   background-color: pink;
+
 }
 
 button.btnlikes:hover {
   background-color: powderblue;
 }
 
-button.btnLikeClicked {
-  background-color: lime;
-}
-
 /*Dislike*/
 
 button.btnUnlikes {
   background-color: red;
+
 }
 
 button.btnUnlikes:hover {
   background-color: gold;
+  
 }
 
-button.btnUnlikeClicked {
-  background-color: orange;
-}
 
 footer {
   display: flex;
@@ -327,6 +249,15 @@ footer {
     height: 85vh;
   }
 }
+
+@media screen and (max-width: 485px) {
+  .midLine {
+
+    display: none;
+
+  }
+}
+
 
 @media screen and (max-width: 415px) {
   .start-form {
