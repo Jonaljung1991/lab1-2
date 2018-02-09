@@ -170,25 +170,32 @@ header {
   overflow-x: hidden;
 }
 
-#inputMain{
+#inputMain {
+  display: none;
   padding: 1rem;
   background-color: gray;
-  width:45%;
+  width: 45%;
 }
 
-.sentMess{
+#textInput {
+  position: relative;
+  width: 80%;
+}
+
+.sentMess {
   background-color: #f4f4f4;
+}
 
+.userDiv {
+  background-color: #333333;
+  padding: 0.5rem;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-.userDiv{
-background-color: #333333;
-padding: 0.5rem;
-color: #fff;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-}
-.userDiv h3{
+
+.userDiv h3 {
   font-weight: lighter;
 }
 
@@ -199,7 +206,8 @@ justify-content: space-between;
   margin: 10px;
   padding: 5px;
 }
-.like-disBtnDiv{
+
+.like-disBtnDiv {
   margin: 10px;
   display: flex;
   flex-direction: row;
@@ -223,25 +231,34 @@ justify-content: space-between;
 
 button.btnlikes {
   background-color: lime;
-
+  padding: 0.5rem;
+  margin: 5px;
+  border: none;
+  transition: 0.4s;
 }
 
 button.btnlikes:hover {
-  background-color: powderblue;
+  border-radius: 5px;
+  background-color: green;
+  ;
+  color: #fff;
 }
 
 /*Dislike*/
 
 button.btnUnlikes {
   background-color: red;
-
+  padding: 0.5rem;
+  margin: 5px;
+  border: none;
+  transition: 0.4s;
 }
 
 button.btnUnlikes:hover {
   background-color: gold;
-
+  border-radius: 5px;
+  
 }
-
 
 footer {
   display: flex;
@@ -259,19 +276,16 @@ footer {
     width: 70%;
     height: 85vh;
   }
-  #inputMain{
-    width:70%;
+  #inputMain {
+    width: 70%;
   }
 }
 
 @media screen and (max-width: 485px) {
   .midLine {
-
     display: none;
-
   }
 }
-
 
 @media screen and (max-width: 415px) {
   .start-form {
@@ -282,7 +296,7 @@ footer {
     width: 95%;
     height: 95vh;
   }
-  #inputMain{
-    width:95%;
+  #inputMain {
+    width: 95%;
   }
 }

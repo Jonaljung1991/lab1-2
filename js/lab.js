@@ -9,15 +9,10 @@ const config = {
 };
 firebase.initializeApp(config);
 
-
-
 // project code
 window.addEventListener('load', everything);
 
-
-
 function everything(event) {
-
 
 
   // link to database
@@ -26,6 +21,7 @@ function everything(event) {
   // all html elements
   const htmlElement = {
     //CHAT PAGE
+    chatInput: document.getElementById('inputMain'),
     sendBtn: document.getElementById('sendBtn'),
     textInput: document.getElementById("textInput"),
     datum: document.getElementById("date"),
@@ -131,6 +127,7 @@ function everything(event) {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
+
       var displayName = user.providerData[0].displayName;
       var email = user.email;
       var emailVerified = user.emailVerified;
@@ -144,7 +141,7 @@ function everything(event) {
       document.getElementsByClassName('start-form')[0].style.display = 'none';
       document.getElementsByClassName('chat-form')[0].style.display = 'block';
       document.getElementById('logOut').style.display = 'block';
-
+      htmlElement.chatInput.style.display ='block';
       // show user
       if (photoURL != null) {
         document.getElementById('userImg').src = photoURL;
@@ -230,9 +227,6 @@ function everything(event) {
     document.getElementById('date').innerHTML = datum();
   }
 
-
-  console.log('userIdInfo ', userIdInfo);
-
   // Message object
   let message = {
     sender: userIdInfo,
@@ -275,7 +269,7 @@ function everything(event) {
   // Fetch input
   db.ref("/messages").on("value", function(snapshot) {
 
-    console.log('message updated');
+    
 
     let userData = snapshot.val();
     htmlElement.chatContainer.innerHTML = '';
@@ -288,7 +282,6 @@ function everything(event) {
     var unlikelist;
     var messageId;
 
-    //let targetId;
 
     for (let info in userData) {
       str = userData[info];
@@ -314,8 +307,6 @@ function everything(event) {
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
 
-        console.log('likelist is ', likelist);
-        console.log('unlikelist is', unlikelist);
 
         if (likelist && likelist.hasOwnProperty(userIdInfo.userId)) {
 
@@ -323,7 +314,7 @@ function everything(event) {
 
           if (likelist != undefined) {
             val = Object.keys(likelist).length;
-            console.log('val = ' + val);
+            //console.log('val = ' + val);
             db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
           } else if (likelist == undefined || likelist == 0) {
             db.ref('/messages/' + messageId + '/likes/value').set(0);
@@ -333,8 +324,8 @@ function everything(event) {
         } else {
 
           db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1).then(function(response) {
-            console.log('response är =', response);
-            console.log(response);
+            //console.log('response är =', response);
+            //console.log(response);
           });
 
           if (likelist == undefined || likelist == 0) {
@@ -344,12 +335,10 @@ function everything(event) {
               val = Object.keys(unlikelist).length;
               if (unlikelist.hasOwnProperty(userIdInfo.userId)) {
                 db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).remove();
-                console.log('disLike before minus ', val);
+                //console.log('disLike before minus ', val);
                 db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
               }
             }
-            //  console.log('when you like unlikelist is ', unlikelist);
-            //console.log(' when you like likelist is ', likelist);
           } else if (likelist != undefined) {
             val = Object.keys(likelist).length;
             db.ref('/messages/' + messageId + '/likes/value').set(val + 1);
@@ -359,9 +348,6 @@ function everything(event) {
                 db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
               }
             }
-            //db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
-            //  console.log('when you like unlikelist is ', unlikelist);
-            //console.log(' when you like likelist is ', likelist);
           }
         }
       });
@@ -372,9 +358,7 @@ function everything(event) {
         messageId = event.target.parentElement.parentElement.id;
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
-        console.log(userIdInfo.userId);
-
-        //console.log('unlikelist is ', unlikelist);
+        //console.log(userIdInfo.userId);
 
         if (unlikelist && unlikelist.hasOwnProperty(userIdInfo.userId)) {
 
@@ -383,20 +367,18 @@ function everything(event) {
           //ställ i manuelt att det minskar
           if (unlikelist != undefined) {
             val = Object.keys(unlikelist).length;
-            console.log('val = ' + val);
+            //console.log('val = ' + val);
             db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
           } else if (unlikelist == undefined || unlikelist == 0) {
-            console.log('unlikelist is undefined');
+            //console.log('unlikelist is undefined');
             // koden här kommer aldrig att köras för listan blir adrig undefined i det hör stadiet
             db.ref('/messages/' + messageId + '/dislikes/value').set(0);
           } else {
             console.log('i am nothing');
           }
         } else {
-
           db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).set(1)
-
-          //ställ i manuelt att det ökar och glöm inte att listan här existerar men registreras som undefined ibland.
+          //ställ i manuelt att det ökar och glöm inte att listan här existerar men registreras som undefined just nu.
           if (unlikelist == undefined || unlikelist == 0) {
             val = 0;
             db.ref('/messages/' + messageId + '/dislikes/value').set(val + 1);
@@ -407,9 +389,6 @@ function everything(event) {
                 db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
               }
             }
-            //  console.log('when you unlike unlikelist is ', unlikelist);
-            //  console.log(' when you unlike likelist is ', likelist);
-            //  db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
           } else if (unlikelist != undefined) {
             val = Object.keys(unlikelist).length;
             db.ref('/messages/' + messageId + '/dislikes/value').set(val + 1);
@@ -419,17 +398,13 @@ function everything(event) {
                 db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
               }
             }
-            //console.log('when you unlike unlikelist is ', unlikelist);
-            //console.log(' when you unlike likelist is ', likelist);
-            //  db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
           }
         }
-
       });
 
       htmlElement.chatContainer.appendChild(div);
     }
-    window.scrollTo(0,document.body.scrollHeight);
+    //window.scrollTo(0,document.body.scrollHeight);
     htmlElement.chatForm.scrollTop = htmlElement.chatForm.scrollHeight;
 
   }); // Snapshot END here
