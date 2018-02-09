@@ -27,7 +27,7 @@ function everything(event) {
     datum: document.getElementById("date"),
     chatContainer: document.getElementById("container"),
     userImg: document.getElementById("userImg"),
-    chatForm:document.getElementsByClassName('chat-form')[0],
+    chatForm: document.getElementsByClassName('chat-form')[0],
 
     // LOGIN PAGE
     mail: document.getElementById('mail'),
@@ -52,31 +52,37 @@ function everything(event) {
 
   //LOGGA IN
 
-  // Authenticate GIthub code
+  // Authenticate information
   let provider = new firebase.auth.GithubAuthProvider();
+  let googleProvider = new firebase.auth.GoogleAuthProvider();
+  let facebookProvider = new firebase.auth.FacebookAuthProvider();
+
   provider.setCustomParameters({ // optional
     'allow_signup': 'true'
   });
 
+  htmlElement.signInWithGoogle.addEventListener('click', function(event) {
+    firebase.auth().signInWithRedirect(googleProvider);
+  });
+
+  //Sign in buttons
   htmlElement.SignInWithGithub.addEventListener("click", function(event) { // Activate sign in
     firebase.auth().signInWithRedirect(provider);
-  })
+  });
 
+  htmlElement.signInWithFacebook.addEventListener('click', function(event) {
+    firebase.auth().signInWithRedirect(facebookProvider);
+  });
+
+  // Get getRedirectResult
   firebase.auth().getRedirectResult().then(function(result) {
     if (result.credential) {
       // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       var token = result.credential.accessToken;
-      console.log('Your github accesstoken ' + token);
+      console.log('Your accesstoken is' + token);
       // ...
     }
     // The signed-in user info.
-
-    let googleProvider = new firebase.auth.GoogleAuthProvider();
-    htmlElement.signInWithGoogle.addEventListener('click', function(event) {
-      firebase.auth().signInWithRedirect(googleProvider);
-    });
-
-    var user = result.user;
   }).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
@@ -92,9 +98,10 @@ function everything(event) {
     // ...
   });
 
-  // Authenticate Google code
 
-  firebase.auth().getRedirectResult().then(function(result) {
+
+
+  /*firebase.auth().getRedirectResult().then(function(result) {
     if (result.credential) {
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
@@ -111,23 +118,13 @@ function everything(event) {
     // The firebase.auth.AuthCredential type that was used.
     var credential = error.credential;
     // ...
-  });
+  });*/
 
-  //...
-
-  // Authenticate Facebook code
-  let facebookProvider = new firebase.auth.FacebookAuthProvider();
-
-  htmlElement.signInWithFacebook.addEventListener('click', function(event) {
-    firebase.auth().signInWithRedirect(facebookProvider);
-  });
-  //...
 
   // The auth Listener
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
-
       var displayName = user.providerData[0].displayName;
       var email = user.email;
       var emailVerified = user.emailVerified;
@@ -141,7 +138,7 @@ function everything(event) {
       document.getElementsByClassName('start-form')[0].style.display = 'none';
       document.getElementsByClassName('chat-form')[0].style.display = 'block';
       document.getElementById('logOut').style.display = 'block';
-      htmlElement.chatInput.style.display ='block';
+      htmlElement.chatInput.style.display = 'block';
       // show user
       if (photoURL != null) {
         document.getElementById('userImg').src = photoURL;
@@ -170,7 +167,6 @@ function everything(event) {
         document.getElementById("userDisplay").innerText = "Anonymous user";
 
       }
-
       // ...
     } else {
       // ...
@@ -186,8 +182,8 @@ function everything(event) {
       })
       .catch(function(error) {
         console.log('Signout failed');
-      })
-  })
+      });
+  });
 
 
   // Time Element
@@ -198,7 +194,6 @@ function everything(event) {
     let h = checkTime(hours);
     let m = checkTime(minutes);
     let finalTime = `${h} : ${m}`;
-
 
     function checkTime(i) {
       if (i < 10) {
@@ -243,33 +238,27 @@ function everything(event) {
   };
 
 
-
   // Text input
-  if (htmlElement.textInput != null) {
-    htmlElement.textInput.addEventListener("change", function(event) {
+  htmlElement.textInput.addEventListener("change", function(event) {
 
-      message.text = htmlElement.textInput.value;
-      message.time = getTime();
-    });
+    message.text = htmlElement.textInput.value;
+    message.time = getTime();
+  });
 
-  }
 
-  let userSend;
+
   // Send input
-  if (htmlElement.sendBtn != null) {
-    htmlElement.sendBtn.addEventListener("click", function(event) {
+  htmlElement.sendBtn.addEventListener("click", function(event) {
 
-      userSend = userIdInfo.name;
-      let uniqueMess = db.ref('/messages').push(message);
-      console.log(uniqueMess.key);
+    userSend = userIdInfo.name;
+    let uniqueMess = db.ref('/messages').push(message);
+    console.log(uniqueMess.key);
 
-    });
-  }
+  });
+
 
   // Fetch input
   db.ref("/messages").on("value", function(snapshot) {
-
-    
 
     let userData = snapshot.val();
     htmlElement.chatContainer.innerHTML = '';
@@ -281,7 +270,6 @@ function everything(event) {
     var likelist;
     var unlikelist;
     var messageId;
-
 
     for (let info in userData) {
       str = userData[info];
@@ -299,7 +287,6 @@ function everything(event) {
       let likeBtn = div.getElementsByTagName('button')[0];
       let unlikeBtn = div.getElementsByTagName('button')[1];
 
-
       // Like Knapp
       likeBtn.addEventListener('click', function(event) {
 
@@ -307,26 +294,23 @@ function everything(event) {
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
 
-
         if (likelist && likelist.hasOwnProperty(userIdInfo.userId)) {
 
           db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).remove();
 
           if (likelist != undefined) {
             val = Object.keys(likelist).length;
-            //console.log('val = ' + val);
             db.ref('/messages/' + messageId + '/likes/value').set(val - 1);
+
           } else if (likelist == undefined || likelist == 0) {
             db.ref('/messages/' + messageId + '/likes/value').set(0);
+
           } else {
             console.log('i am nothing');
           }
         } else {
 
-          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1).then(function(response) {
-            //console.log('response är =', response);
-            //console.log(response);
-          });
+          db.ref('/messages/' + messageId + '/likeList/' + userIdInfo.userId).set(1).then(function(response) {});
 
           if (likelist == undefined || likelist == 0) {
             val = 0;
@@ -335,7 +319,6 @@ function everything(event) {
               val = Object.keys(unlikelist).length;
               if (unlikelist.hasOwnProperty(userIdInfo.userId)) {
                 db.ref('/messages/' + messageId + '/unlikeList/' + userIdInfo.userId).remove();
-                //console.log('disLike before minus ', val);
                 db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
               }
             }
@@ -352,13 +335,12 @@ function everything(event) {
         }
       });
 
-
       // Unlike knapp
       unlikeBtn.addEventListener('click', function(event) {
         messageId = event.target.parentElement.parentElement.id;
         likelist = userData[messageId].likeList;
         unlikelist = userData[messageId].unlikeList;
-        //console.log(userIdInfo.userId);
+
 
         if (unlikelist && unlikelist.hasOwnProperty(userIdInfo.userId)) {
 
@@ -367,12 +349,11 @@ function everything(event) {
           //ställ i manuelt att det minskar
           if (unlikelist != undefined) {
             val = Object.keys(unlikelist).length;
-            //console.log('val = ' + val);
             db.ref('/messages/' + messageId + '/dislikes/value').set(val - 1);
+
           } else if (unlikelist == undefined || unlikelist == 0) {
-            //console.log('unlikelist is undefined');
-            // koden här kommer aldrig att köras för listan blir adrig undefined i det hör stadiet
             db.ref('/messages/' + messageId + '/dislikes/value').set(0);
+
           } else {
             console.log('i am nothing');
           }
@@ -404,16 +385,9 @@ function everything(event) {
 
       htmlElement.chatContainer.appendChild(div);
     }
-    //window.scrollTo(0,document.body.scrollHeight);
     htmlElement.chatForm.scrollTop = htmlElement.chatForm.scrollHeight;
 
   }); // Snapshot END here
-
-
-
-
-
-
 
 
 
